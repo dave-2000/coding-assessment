@@ -9,7 +9,7 @@ export default function DogCard({dog}) {
 
         <div className="p-3">
 
-            <button className="bg-green-500 text-white p-2 rounded-xl">adopt</button>
+            {/* <button className="bg-green-500 text-white p-2 rounded-xl">adopt</button> */}
 
         </div>
 
