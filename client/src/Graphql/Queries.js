@@ -5,7 +5,7 @@ import { gql } from "@apollo/client";
 export const LOAD_USER = (email)=>{
     const userQuery = gql`
     query{
-        getUserByEmail(email:"${email}"){
+        user(email:"${email}"){
             name,
             email
         }
@@ -17,7 +17,7 @@ export const LOAD_USER = (email)=>{
 export const LOAD_DOGS = (breed)=>{
     const dogQuery = gql`
     query{
-        dogbreed(name:"${breed}"){
+        dogbreed(breed:"${breed}"){
             dogImages
         }
     }

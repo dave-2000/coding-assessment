@@ -14,17 +14,16 @@ export default function SignIn() {
     const [email, setEmail] = useState('')
     const [name, setName] = useState('')
 
-    const [error, setError] = useState(false)
+    const [signInError, setSignInError] = useState(false)  // error message if anything goes wrong in sign in or sign up
 
     const [isLoggingIn, setLoggingIn] = useState(true) // if user is not logging in he is signing up
 
-    const [createUser, { loading}] = useMutation(CREATE_USER);
-
     const signInQuery = useQuery(LOAD_USER(email))
+    const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
 
     const handleAction =(e)=>{
         // handle user sign in or sign up
-        setError(false)
+        setSignInError(false)
         e.preventDefault()
         if (isLoggingIn){
             handleSignIn()
@@ -43,36 +42,26 @@ export default function SignIn() {
 
     const handleSignIn =()=>{
         if (signInQuery.data !== undefined){
+            localStorage.setItem('email', JSON.stringify({email}));
             navigate('/adoption')
         } else if(signInQuery.error){
-            setError(true)
+            setSignInError(true)
         }
     }
 
     const handleSignUp = async ()=>{
-
         try{
-            const {data} = await createUser({
-                variables: {
-                  user: {
-                    name: name,
-                    email: email,
-                  },
-                },
-              });
-
-            if (data !== undefined){
-                
-            }
-        
-        } catch(e){
-            console.log( 'error', e, e.message)
-            setError(true)
+            createUser({ variables: { name, email } })
+            localStorage.setItem('email', JSON.stringify({email}));
+            navigate('/adoption')
+        }catch(e){
+            setSignInError(true)
+            console.log(e)
         }
     }
 
     const handleLoggingInState =()=>{
-        setError(false)
+        setSignInError(false)
         setLoggingIn(!isLoggingIn)
     }
 
@@ -89,7 +78,7 @@ export default function SignIn() {
 
         </div>
 
-        {error && <p className='text-center text-red-500'>something went wrong, try again</p>}
+        {signInError && <p className='text-center text-red-500'>something went wrong, try again</p>}
 
         <p className="text-0.5 text-gray-500 text-center mt-3 cursor-pointer" onClick={handleLoggingInState}>{`${isLoggingIn?'It is my first time here':'I have an account'}`}</p>
         

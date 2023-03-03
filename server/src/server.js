@@ -10,13 +10,17 @@ const {
 } = require('graphql')
 
 const axios = require('axios');
+const cors = require("cors");
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express()
 
 const users = [
-    {name:'john', email:'abc@xyz.com'},
+    {name:'john', email:'abc@xyz.com', dogs:[]},
     {name:'johnd', email:'abcd@xyz.com', dogs:['fdjfjdfjjdfj']}
 ]
+
 
 
 // defining types
@@ -50,13 +54,30 @@ const getDogs =async (breed)=>{
     }
 }
 
+const validateEmail =(email)=>{
+    return String(email)
+        .toLowerCase()
+        .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
+}
 
 const handleCreateUser =(name, email)=>{
     // email must be email
     // name must be more than three characters
-    const user = {name, email, dogs:[]}
-    users.push(user)
-    return user
+    if (validateEmail(email)){
+        if (name.length >= 3){
+            const user = {name, email, dogs:[]}
+            users.push(user)
+            return user
+        } else{
+            throw new Error('name must be at least 3 characters')
+        }
+        
+    } else{
+        throw new Error('email must be an email')
+    }
+    
 }
 
 const handleAdoption =(email, dogImage)=>{
@@ -132,8 +153,10 @@ const schema = new GraphQLSchema({
   mutation: RootMutationType
 })
 
+app.use(cors())
+
 app.use('/graphql', graphqlHTTP({
   schema: schema,
   graphiql: true
-}))
+}), )
 app.listen(3000, () => console.log('Server Running'))

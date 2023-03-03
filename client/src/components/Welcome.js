@@ -6,7 +6,7 @@ export default function Welcome({setShowMessage}) {
 
       <h1 className='text-5xl text-center'>Welcome to <span className='text-green-500 font-bold'>Puppy House</span></h1>
 
-      <h2 className='text-center text-xl mt-3'>Adopt virtual dogs</h2>
+      <h2 className='text-center text-xl mt-3'>view beautiful dog photos</h2>
 
       <div className='flex justify-center mt-10'>
 
